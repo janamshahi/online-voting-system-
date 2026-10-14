@@ -1,0 +1,85 @@
+ 
+{% extends "base.html" %}
+{% block title %}Register | Online Voting System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5">
+
+            <p class="text-success fw-semibold mb-1">WCA VOTER ACCOUNT</p>
+            <h2 class="fw-bold">Create Account</h2>
+
+            <p class="text-secondary">
+                Your Student ID will be generated automatically when you register.
+                An administrator must approve your voter eligibility before you can vote.
+            </p>
+
+            <div class="alert alert-info rounded-3">
+                <strong>Student ID:</strong> Generated automatically after registration
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold"
+                               for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text|safe }}</div>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    Create Account
+                </button>
+            </form>
+
+            <p class="text-center text-secondary mt-4 mb-0">
+                Already have an account?
+                <a href="{% url 'login' %}" class="text-success fw-semibold">
+                    Login here
+                </a>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    #id_username,
+    #id_password1,
+    #id_password2 {
+        display: block;
+        width: 100%;
+        padding: .7rem .85rem;
+        border: 1px solid #ced4da;
+        border-radius: .5rem;
+    }
+
+    #id_username:focus,
+    #id_password1:focus,
+    #id_password2:focus {
+        border-color: #198754;
+        outline: 0;
+        box-shadow: 0 0 0 .2rem rgba(25, 135, 84, .15);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,137 @@
+
+{% extends "base.html" %}
+
+{% block title %}Results | {{ election.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <div class="display-4 mb-2">🏆</div>
+            <p class="text-success fw-bold mb-1">OFFICIAL ELECTION RESULTS</p>
+            <h1 class="fw-bold">{{ election.title }}</h1>
+            <p class="text-secondary mb-0">
+                Total ballots counted:
+                <strong>{{ total_votes }}</strong>
+            </p>
+        </div>
+
+        <!-- Winner Section -->
+        {% if rows %}
+            {% with highest_votes=rows.0.votes %}
+                {% if highest_votes > 0 %}
+                    <div class="winner-card text-center p-4 mb-4 rounded-4">
+                        {% with winner_count=0 %}
+                            <h2 class="fw-bold mb-2">🏆 Election Winner</h2>
+
+                            {% for row in rows %}
+                                {% if row.votes == highest_votes %}
+                                    <div class="winner-name fs-3 fw-bold">
+                                        {{ row.candidate.full_name }}
+                                    </div>
+                                    <div class="text-secondary mb-2">
+                                        {{ row.candidate.position }}
+                                    </div>
+                                    <span class="badge rounded-pill text-bg-success px-3 py-2">
+                                        {% if forloop.first and rows|length > 1 %}
+                                            {% if rows.1.votes == highest_votes %}
+                                                Tied for First Place
+                                            {% else %}
+                                                Winner
+                                            {% endif %}
+                                        {% else %}
+                                            Winner
+                                        {% endif %}
+                                        · {{ row.votes }} vote{{ row.votes|pluralize }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info rounded-3 text-center">
+                        No votes have been cast yet. The winner will appear after voting.
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+
+        <!-- Complete Results Table -->
+        <h4 class="fw-bold mb-3">Candidate Results</h4>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Candidate</th>
+                        <th>Position</th>
+                        <th class="text-end">Votes</th>
+                        <th class="text-center">Result</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td class="fw-semibold">{{ forloop.counter }}</td>
+
+                        <td class="fw-semibold">
+                            {{ row.candidate.full_name }}
+                        </td>
+
+                        <td>{{ row.candidate.position }}</td>
+
+                        <td class="text-end fw-bold">{{ row.votes }}</td>
+
+                        <td class="text-center">
+                            {% if total_votes > 0 and row.votes == rows.0.votes %}
+                                <span class="badge text-bg-success">
+                                    🏆 Winner
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-light border">
+                                    Participant
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-secondary py-4">
+                            No candidates found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a class="btn btn-outline-success mt-3 align-self-start"
+           href="{% url 'election_detail' election.id %}">
+            ← Back to election
+        </a>
+
+    </div>
+</div>
+
+<style>
+    .winner-card {
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border: 1px solid #bbf7d0;
+    }
+
+    .winner-name {
+        color: #166534;
+    }
+
+    @media (max-width: 576px) {
+        .winner-name {
+            font-size: 1.4rem !important;
+        }
+    }
+</style>
+{% endblock %}

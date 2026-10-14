@@ -1,0 +1,374 @@
+
+{% extends "admin/base_site.html" %}
+
+{% block title %}Voting Results | WCA{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .results-dashboard {
+        padding-bottom: 30px;
+    }
+
+    .results-heading {
+        margin-bottom: 8px;
+        font-weight: 800;
+    }
+
+    .results-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .summary-card {
+        padding: 22px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, .04);
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .summary-number {
+        font-size: 30px;
+        font-weight: 800;
+        color: #166534;
+        line-height: 1.2;
+    }
+
+    .election-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, .04);
+    }
+
+    .election-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .election-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin: 0 0 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .election-dates {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .status-pill {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #e8f5ec;
+        color: #166534;
+    }
+
+    .status-upcoming {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-closed {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .status-unpublished {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .metric-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .metric-box {
+        padding: 14px;
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+    .metric-label {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .metric-value {
+        font-size: 21px;
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 570px;
+    }
+
+    .results-table th,
+    .results-table td {
+        padding: 14px 10px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        vertical-align: middle;
+    }
+
+    .results-table th {
+        font-size: 11px;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .candidate-name {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .vote-count {
+        font-weight: 800;
+        color: #166534;
+    }
+
+    .progress-track {
+        width: 100%;
+        min-width: 75px;
+        height: 9px;
+        background: #e5e7eb;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #198754;
+        border-radius: 20px;
+    }
+
+    .percentage {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .empty-results {
+        text-align: center;
+        color: #64748b;
+        padding: 25px;
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+    .admin-link {
+        display: inline-block;
+        margin-top: 16px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+        .summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .summary-grid,
+        .metric-row {
+            grid-template-columns: 1fr;
+        }
+
+        .election-card {
+            padding: 15px;
+        }
+
+        .summary-number {
+            font-size: 25px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-dashboard">
+
+    <h1 class="results-heading">Voting Results</h1>
+
+    <p class="results-subtitle">
+        Western Crystal Academy — election analytics and candidate vote counts.
+    </p>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Total Elections</div>
+            <div class="summary-number">{{ total_elections }}</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Total Ballots</div>
+            <div class="summary-number">{{ total_votes_all }}</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Total Participation Records</div>
+            <div class="summary-number">{{ total_participants_all }}</div>
+        </div>
+    </div>
+
+    {% for item in election_results %}
+        <section class="election-card">
+
+            <div class="election-top">
+                <div>
+                    <h2 class="election-title">
+                        {{ item.election.title }}
+                    </h2>
+
+                    <div class="election-dates">
+                        Opens {{ item.election.opens_at|date:"M d, Y H:i" }}
+                        &middot;
+                        Closes {{ item.election.closes_at|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+
+                <span class="status-pill
+                    {% if item.status == 'Upcoming' %}status-upcoming
+                    {% elif item.status == 'Closed' %}status-closed
+                    {% elif item.status == 'Unpublished' %}status-unpublished
+                    {% endif %}">
+                    {{ item.status }}
+                </span>
+            </div>
+
+            <div class="metric-row">
+                <div class="metric-box">
+                    <span class="metric-label">Total Ballots</span>
+                    <span class="metric-value">{{ item.total_votes }}</span>
+                </div>
+
+                <div class="metric-box">
+                    <span class="metric-label">Participation Records</span>
+                    <span class="metric-value">{{ item.total_participants }}</span>
+                </div>
+
+                <div class="metric-box">
+                    <span class="metric-label">Candidates</span>
+                    <span class="metric-value">{{ item.total_candidates }}</span>
+                </div>
+            </div>
+
+            <h3 class="h5 font-weight-bold mb-3">
+                Candidate Results
+            </h3>
+
+            {% if item.candidate_results %}
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Position</th>
+                                <th>Votes</th>
+                                <th>Vote Share</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for result in item.candidate_results %}
+                                <tr>
+                                    <td class="candidate-name">
+                                        {{ result.candidate.full_name }}
+                                    </td>
+
+                                    <td>{{ result.candidate.position }}</td>
+
+                                    <td class="vote-count">
+                                        {{ result.vote_count }}
+                                    </td>
+
+                                    <td>
+                                        <div class="progress-track">
+                                            <div
+                                                class="progress-fill"
+                                                style="width: {{ result.percentage }}%;">
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="percentage">
+                                        {{ result.percentage }}%
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-results">
+                    No active candidates are available for this election.
+                </div>
+            {% endif %}
+
+            {% if item.results_published %}
+                <p class="text-success mt-3 mb-0">
+                    Results are published for voters.
+                </p>
+            {% else %}
+                <p class="text-muted mt-3 mb-0">
+                    Results are not yet published to voters.
+                    These totals are visible here to authorized administrators.
+                </p>
+            {% endif %}
+
+            <a
+                class="admin-link"
+                href="{% url 'admin:voting_election_changelist' %}">
+                Manage Elections &rarr;
+            </a>
+
+        </section>
+    {% empty %}
+        <div class="empty-results">
+            <h3>No elections found</h3>
+            <p>Create an election and add candidates to view results.</p>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

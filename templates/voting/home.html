@@ -1,0 +1,868 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Western Crystal Academy Voting System{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* HOME PAGE */
+    .home-page {
+        --home-green: #176b55;
+        --home-dark: #104b3d;
+        --home-accent: #d8ef8b;
+    }
+
+    .home-page a {
+        text-decoration: none;
+    }
+
+    /* HERO */
+    .home-hero {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        border-radius: 28px;
+        padding: 56px 48px;
+        color: white;
+        background: linear-gradient(125deg, #103e32 0%, #176b55 60%, #21856a 100%);
+        box-shadow: 0 20px 55px rgba(16, 75, 61, .16);
+    }
+
+    .home-hero::before,
+    .home-hero::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .home-hero::before {
+        width: 360px;
+        height: 360px;
+        top: -170px;
+        right: -70px;
+        border: 1px solid rgba(255,255,255,.15);
+        box-shadow:
+            0 0 0 35px rgba(255,255,255,.035),
+            0 0 0 75px rgba(255,255,255,.025);
+    }
+
+    .home-hero::after {
+        width: 260px;
+        height: 260px;
+        bottom: -180px;
+        left: 38%;
+        background: rgba(216,239,139,.07);
+    }
+
+    .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 30px;
+        background: rgba(255,255,255,.09);
+        color: #e7f5c4;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .hero-title {
+        max-width: 680px;
+        margin: 24px 0 18px;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 1.08;
+    }
+
+    .hero-title span {
+        color: var(--home-accent);
+    }
+
+    .hero-description {
+        max-width: 550px;
+        color: rgba(255,255,255,.78);
+        font-size: 17px;
+        line-height: 1.85;
+    }
+
+    .hero-primary-btn {
+        background: var(--home-accent);
+        border: 1px solid var(--home-accent);
+        color: #173e32;
+        border-radius: 11px;
+        padding: 13px 21px;
+        font-weight: 700;
+        transition: .25s ease;
+    }
+
+    .hero-primary-btn:hover {
+        background: #c8e676;
+        border-color: #c8e676;
+        color: #173e32;
+        transform: translateY(-2px);
+    }
+
+    .hero-secondary-btn {
+        border: 1px solid rgba(255,255,255,.45);
+        color: white;
+        border-radius: 11px;
+        padding: 13px 21px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
+
+    .hero-secondary-btn:hover {
+        background: rgba(255,255,255,.12);
+        color: white;
+        border-color: white;
+    }
+
+    /* HERO VISUAL */
+    .hero-visual {
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .ballot-art {
+        width: 245px;
+        height: 245px;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 50%;
+        background: rgba(255,255,255,.075);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .ballot-art::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border: 1px dashed rgba(255,255,255,.25);
+        border-radius: 50%;
+    }
+
+    .ballot-icon {
+        font-size: 100px;
+        filter: drop-shadow(0 14px 16px rgba(0,0,0,.18));
+        animation: ballotFloat 4s ease-in-out infinite;
+    }
+
+    .floating-note {
+        position: absolute;
+        right: -6px;
+        bottom: 20px;
+        padding: 14px 18px;
+        border-radius: 15px;
+        background: #fff;
+        color: #173e32;
+        box-shadow: 0 12px 35px rgba(0,0,0,.16);
+        font-size: 13px;
+    }
+
+    .floating-note strong {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 15px;
+    }
+
+    @keyframes ballotFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* SECTION HEADINGS */
+    .section-eyebrow {
+        margin-bottom: 8px;
+        color: var(--home-green);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+    }
+
+    .section-title {
+        margin-bottom: 8px;
+        color: #173e32;
+        font-size: clamp(1.65rem, 3vw, 2.2rem);
+        font-weight: 800;
+        letter-spacing: -.7px;
+    }
+
+    .section-description {
+        color: #74817b;
+        line-height: 1.75;
+    }
+
+    /* QUICK INFO */
+    .info-strip {
+        margin-top: 24px;
+        margin-bottom: 56px;
+    }
+
+    .info-item {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 19px;
+        background: #fff;
+        border: 1px solid #e8efeb;
+        border-radius: 15px;
+    }
+
+    .info-icon {
+        width: 47px;
+        height: 47px;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        background: #eaf5ee;
+        font-size: 22px;
+    }
+
+    .info-item strong {
+        display: block;
+        color: #173e32;
+        font-size: 14px;
+    }
+
+    .info-item small {
+        color: #798780;
+        font-size: 12px;
+    }
+
+    /* ELECTION CARDS */
+    .election-section {
+        scroll-margin-top: 105px;
+        margin-bottom: 60px;
+    }
+
+    .election-card {
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8efeb;
+        border-radius: 19px;
+        box-shadow: 0 5px 22px rgba(15,55,43,.035);
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+
+    .election-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 17px 36px rgba(15,55,43,.09);
+        border-color: #c9e3d4;
+    }
+
+    .election-card-top {
+        padding: 22px 22px 0;
+    }
+
+    .election-card-body {
+        padding: 18px 22px 22px;
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 65px);
+    }
+
+    .election-symbol {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        background: #edf6f0;
+        color: #176b55;
+        font-size: 21px;
+    }
+
+    .election-type {
+        color: #65756d;
+        background: #f2f6f3;
+        border: 1px solid #e6eee8;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        text-transform: uppercase;
+        padding: 7px 10px;
+    }
+
+    .election-card h3 {
+        margin: 17px 0 10px;
+        color: #193b30;
+        font-size: 19px;
+        font-weight: 750;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+
+    .election-description {
+        color: #77847e;
+        font-size: 13px;
+        line-height: 1.8;
+        flex-grow: 1;
+    }
+
+    .election-dates {
+        margin-top: 13px;
+        margin-bottom: 20px;
+        padding: 13px;
+        border-radius: 11px;
+        background: #f7f9f8;
+    }
+
+    .date-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: #7a8780;
+        font-size: 11px;
+    }
+
+    .date-line + .date-line {
+        margin-top: 8px;
+    }
+
+    .date-line strong {
+        color: #364b41;
+        font-size: 11px;
+        font-weight: 650;
+        text-align: right;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        display: inline-block;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .status-open {
+        color: #17734d;
+        background: #e3f7eb;
+    }
+
+    .status-upcoming {
+        color: #8a6110;
+        background: #fff3d5;
+    }
+
+    .status-closed {
+        color: #65716b;
+        background: #edf0ee;
+    }
+
+    .election-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 10px;
+        padding: 11px 15px;
+        background: #176b55;
+        border: 1px solid #176b55;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s ease;
+    }
+
+    .election-btn:hover {
+        background: #104b3d;
+        border-color: #104b3d;
+        color: #fff;
+    }
+
+    .empty-state {
+        padding: 58px 24px;
+        text-align: center;
+        background: #fff;
+        border: 1px dashed #cbdcd2;
+        border-radius: 20px;
+    }
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 18px;
+        border-radius: 22px;
+        background: #edf6f0;
+        font-size: 33px;
+    }
+
+    /* HOW IT WORKS */
+    .steps-section {
+        margin-bottom: 60px;
+    }
+
+    .step-card {
+        height: 100%;
+        padding: 25px 22px;
+        background: #fff;
+        border: 1px solid #e8efeb;
+        border-radius: 17px;
+    }
+
+    .step-number {
+        width: 39px;
+        height: 39px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 17px;
+        border-radius: 12px;
+        background: #e6f3e9;
+        color: #176b55;
+        font-weight: 800;
+    }
+
+    .step-card h4 {
+        color: #193b30;
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .step-card p {
+        margin-bottom: 0;
+        color: #78857e;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    /* BOTTOM CTA */
+    .home-cta {
+        position: relative;
+        overflow: hidden;
+        padding: 35px;
+        border-radius: 22px;
+        background: #e8f3eb;
+        border: 1px solid #d9eadd;
+    }
+
+    .home-cta h2 {
+        color: #174a39;
+        font-weight: 800;
+        font-size: clamp(1.4rem, 3vw, 2rem);
+    }
+
+    .home-cta p {
+        max-width: 650px;
+        margin-bottom: 0;
+        color: #61766a;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .cta-btn {
+        display: inline-block;
+        flex-shrink: 0;
+        padding: 12px 20px;
+        border-radius: 10px;
+        background: #176b55;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .cta-btn:hover {
+        background: #104b3d;
+        color: #fff;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-home {
+        animation: fadeUp .65s ease both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: .01ms !important;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .home-hero {
+            padding: 35px 25px;
+            border-radius: 22px;
+        }
+
+        .hero-title {
+            letter-spacing: -1px;
+        }
+
+        .hero-description {
+            font-size: 15px;
+        }
+
+        .hero-visual {
+            min-height: 225px;
+        }
+
+        .ballot-art {
+            width: 190px;
+            height: 190px;
+        }
+
+        .ballot-icon {
+            font-size: 78px;
+        }
+
+        .floating-note {
+            right: 0;
+            bottom: 0;
+        }
+
+        .info-strip {
+            margin-bottom: 42px;
+        }
+
+        .election-section,
+        .steps-section {
+            margin-bottom: 45px;
+        }
+
+        .home-cta {
+            padding: 26px 22px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .hero-title {
+            font-size: 2.35rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .hero-actions .btn {
+            margin: 0 0 10px !important;
+            text-align: center;
+        }
+
+        .date-line {
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .date-line strong {
+            text-align: left;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-page">
+
+    <!-- HERO SECTION -->
+    <section class="home-hero animate-home">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="hero-label">
+                    <span>●</span> Election Portal
+                </span>
+
+                <h1 class="hero-title">
+                    Your voice.<br>
+                    Your choice.<br>
+                    <span>Your future.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Welcome to Western Crystal Academy's Online Voting System.
+                    Discover elections, learn about candidates, and make your
+                    voice count through a simple digital voting experience.
+                </p>
+
+                <div class="hero-actions d-flex flex-wrap gap-2 mt-4">
+                    {% if user.is_authenticated %}
+                        <a class="btn hero-primary-btn"
+                           href="#elections">
+                            Explore Elections <span aria-hidden="true">→</span>
+                        </a>
+                    {% else %}
+                        <a class="btn hero-primary-btn"
+                           href="{% url 'login' %}">
+                            Sign in to Vote <span aria-hidden="true">→</span>
+                        </a>
+
+                        <a class="btn hero-secondary-btn"
+                           href="{% url 'register' %}">
+                            Create an Account
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 gap-lg-4 mt-4 pt-2 small"
+                     style="color:rgba(255,255,255,.8)">
+                    <span>✓ Student-focused</span>
+                    <span>✓ Organized elections</span>
+                    <span>✓ Clear results</span>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="hero-visual">
+                    <div class="ballot-art">
+                        <div class="ballot-icon" aria-hidden="true">🗳️</div>
+                    </div>
+
+                    <div class="floating-note">
+                        <strong>Every voice matters.</strong>
+                        <span class="text-secondary">Participate in your election</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK INFORMATION -->
+    <section class="info-strip">
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-4">
+                <div class="info-item">
+                    <div class="info-icon" aria-hidden="true">🗳️</div>
+                    <div>
+                        <strong>Digital Voting</strong>
+                        <small>Participate through the online portal</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <div class="info-item">
+                    <div class="info-icon" aria-hidden="true">👥</div>
+                    <div>
+                        <strong>Student Participation</strong>
+                        <small>For eligible student voters</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <div class="info-item">
+                    <div class="info-icon" aria-hidden="true">📊</div>
+                    <div>
+                        <strong>Election Results</strong>
+                        <small>View results when officially published</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ELECTION CENTRE -->
+    <section id="elections" class="election-section">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <p class="section-eyebrow">Election Centre</p>
+                <h2 class="section-title">Explore elections</h2>
+                <p class="section-description mb-0">
+                    Review election details and check voting schedules.
+                </p>
+            </div>
+
+            <div class="small text-secondary">
+                {% if elections %}
+                    {{ elections|length }} election{{ elections|length|pluralize }}
+                {% else %}
+                    Election portal
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for election in elections %}
+                <div class="col-md-6 col-xl-4">
+                    <article class="election-card">
+
+                        <div class="election-card-top">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="election-symbol" aria-hidden="true">
+                                    🗳️
+                                </div>
+
+                                {% if not election.is_published %}
+                                    <span class="status-badge status-closed">
+                                        <span class="status-dot"></span>
+                                        Unpublished
+                                    </span>
+                                {% elif election.is_open %}
+                                    <span class="status-badge status-open">
+                                        <span class="status-dot"></span>
+                                        Voting Open
+                                    </span>
+                                {% elif election.opens_at > now %}
+                                    <span class="status-badge status-upcoming">
+                                        <span class="status-dot"></span>
+                                        Upcoming
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-closed">
+                                        <span class="status-dot"></span>
+                                        Closed
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="election-card-body">
+                            <h3>{{ election.title }}</h3>
+
+                            <p class="election-description">
+                                {{ election.description|default:"Review the election details, candidates, and schedule before participating."|truncatechars:135 }}
+                            </p>
+
+                            <div class="election-dates">
+                                <div class="date-line">
+                                    <span>Voting opens</span>
+                                    <strong>{{ election.opens_at|date:"M d, Y · H:i" }}</strong>
+                                </div>
+
+                                <div class="date-line">
+                                    <span>Voting closes</span>
+                                    <strong>{{ election.closes_at|date:"M d, Y · H:i" }}</strong>
+                                </div>
+                            </div>
+
+                            <a class="election-btn"
+                               href="{% url 'election_detail' election.id %}">
+                                View Election Details
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+            {% empty %}
+                <div class="col-12">
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">📋</div>
+
+                        <h3 class="h5 fw-bold mb-2">
+                            No published elections yet
+                        </h3>
+
+                        <p class="text-secondary mb-0">
+                            Elections will appear here once an administrator
+                            publishes them. Please check back later.
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="steps-section">
+        <div class="text-center mb-4">
+            <p class="section-eyebrow">Simple Process</p>
+            <h2 class="section-title">How it works</h2>
+            <p class="section-description">
+                Follow these steps to participate in an academy election.
+            </p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h4>Create your account</h4>
+                    <p>Register with your account details and sign in to the portal.</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h4>Check eligibility</h4>
+                    <p>Confirm that your voter profile is eligible to participate.</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h4>Review candidates</h4>
+                    <p>Explore the candidates and their information before voting.</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number">04</div>
+                    <h4>Cast your vote</h4>
+                    <p>Vote during the election period and check results when published.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="home-cta">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+            <div>
+                <h2 class="mb-2">Make your voice count.</h2>
+                <p>
+                    Stay informed about academy elections and be ready to
+                    participate when voting opens.
+                </p>
+            </div>
+
+            {% if user.is_authenticated %}
+                <a href="#elections" class="cta-btn">
+                    Explore Elections →
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="cta-btn">
+                    Sign in to Continue →
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}
